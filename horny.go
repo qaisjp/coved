@@ -8,7 +8,8 @@ import (
 )
 
 func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
-	target := e.Data.Options[0].StringValue()
+	data := e.ApplicationCommandData()
+	target := data.Options[0].StringValue()
 	sourceUserID := e.Member.User.ID
 
 	if sourceUserID != target {
@@ -20,7 +21,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 			if allowedAfter.After(now) {
 				err := s.InteractionRespond(e.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
-					Data: &discordgo.InteractionApplicationCommandResponseData{
+					Data: &discordgo.InteractionResponseData{
 						Content: "You can use this again after " + allowedAfter.Sub(now).String(),
 						Flags:   64, // ephemeral
 					},
@@ -36,7 +37,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	if err != nil {
 		err := s.InteractionRespond(e.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionApplicationCommandResponseData{
+			Data: &discordgo.InteractionResponseData{
 				Content: "Something went wrong: " + err.Error(),
 				Flags:   64, // ephemeral
 			},
@@ -54,7 +55,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	// push response
 	err = s.InteractionRespond(e.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionApplicationCommandResponseData{
+		Data: &discordgo.InteractionResponseData{
 			Content: fmt.Sprintf("Looks like <@%s> is horny ;)", target),
 		},
 	})

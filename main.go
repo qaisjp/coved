@@ -39,8 +39,12 @@ func main() {
 }
 
 func onInteraction(s *discordgo.Session, e *discordgo.InteractionCreate) {
-	if e.Data.Name == "horny" {
+	id := e.ApplicationCommandData().ID
+	if id == CommandHornyID {
 		horny(s, e)
-		return
+	} else if id == CommandPinID {
+		pin(s, e, false)
+	} else if id == CommandUnpinID {
+		pin(s, e, true)
 	}
 }
