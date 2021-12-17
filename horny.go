@@ -9,10 +9,10 @@ import (
 
 func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	data := e.ApplicationCommandData()
-	target := data.Options[0].StringValue()
+	user := data.Options[0].UserValue(s)
 	sourceUserID := e.Member.User.ID
 
-	if sourceUserID != target {
+	if sourceUserID != user.ID {
 		// check time
 		t, ok := savedData.Horny[sourceUserID]
 		if ok {
@@ -33,7 +33,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	}
 
 	c := "808809400667209820"
-	err := s.GuildMemberMove(theGuild, target, &c)
+	err := s.GuildMemberMove(theGuild, user.ID, &c)
 	if err != nil {
 		err := s.InteractionRespond(e.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -47,7 +47,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	}
 
 	// update time
-	if sourceUserID != target {
+	if sourceUserID != user.ID {
 		savedData.Horny[e.Member.User.ID] = time.Now()
 		saveData()
 	}
@@ -56,7 +56,7 @@ func horny(s *discordgo.Session, e *discordgo.InteractionCreate) {
 	err = s.InteractionRespond(e.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("Looks like <@%s> is horny ;)", target),
+			Content: fmt.Sprintf("Looks like <@%s> is horny ;)", user.ID),
 		},
 	})
 	if err != nil {
